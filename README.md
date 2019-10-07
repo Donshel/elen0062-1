@@ -9,3 +9,4 @@ These projects have been developed using [Python](https://www.python.org/).
 ## Authors
 
 * **François Rozet** - [Donshel](https://github.com/Donshel)
+* **Adrien Schoffeniels** - [Schoff21](https://github.com/Schoff21)
