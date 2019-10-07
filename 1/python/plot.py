@@ -7,8 +7,11 @@ Project 1 - Classification algorithms
 
 import numpy as np
 import matplotlib as mpl
+from matplotlib import rc
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
+
+rc('text', usetex=True)
 
 def make_cmaps():
     """
@@ -71,8 +74,8 @@ def plot_boundary(fname, fitted_estimator, X, y, mesh_step_size=0.1, title=""):
     plt.figure()
     try:
         plt.title(title)
-        plt.xlabel("X_0")
-        plt.ylabel("X_1")
+        plt.xlabel("$X_0$")
+        plt.ylabel("$X_1$")
 
         # Put the result into a color plot
         plt.contourf(xx, yy, Z, cmap=bg_map, alpha=.8)
