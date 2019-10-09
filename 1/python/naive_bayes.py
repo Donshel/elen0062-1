@@ -56,13 +56,12 @@ class NaiveBayesClassifier(BaseEstimator, ClassifierMixin):
         self.prior = np.bincount(y)
 
         # Means and variances
-        self.mu = np.zeros((self.n_classes, self.n_variables))
+        self.mu = np.empty((self.n_classes, self.n_variables))
         self.var = np.copy(self.mu)
 
         for i in range(self.n_classes):
-            for j in range(self.n_variables):
-                self.mu[i][j] = np.mean(X[y == i, j])
-                self.var[i][j] = np.var(X[y == i, j])
+            self.mu[i][:] = np.mean(X[y == i, :], axis = 0)
+            self.var[i][:] = np.var(X[y == i, :], axis = 0)
 
         # Return the classifier
         return self
@@ -107,7 +106,7 @@ class NaiveBayesClassifier(BaseEstimator, ClassifierMixin):
             raise ValueError("X must have %d variables" % self.p)
 
         # Probabilities
-        y = np.zeros((X.shape[0], self.n_classes))
+        y = np.empty((X.shape[0], self.n_classes))
 
         for n in range(X.shape[0]):
             for i in range(self.n_classes):
@@ -149,3 +148,15 @@ if __name__ == "__main__":
             A[j] = nbc.score(X[j][n:m], y[j][n:m])
         
         print(str(i + 1), "%f" % np.mean(A), "%f" % np.std(A))
+
+    # 3.4 Plots
+    for i in range(len(make_data)):
+        # Generation
+        X, y = make_data[i](m, random_state = 0)
+
+        # Classifier
+        nbc = NaiveBayesClassifier()
+        nbc.fit(X[0:n], y[0:n])
+
+        st = "make_data" + str(i + 1) + "_naivebayes"
+        plot_boundary(st, nbc, X[0:n], y[0:n])
