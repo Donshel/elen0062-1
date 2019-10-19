@@ -61,8 +61,8 @@ class NaiveBayesClassifier(BaseEstimator, ClassifierMixin):
 		self.var = np.copy(self.mu)
 
 		for i in range(self.n_classes):
-			self.mu[i][:] = np.mean(X[y == i, :], axis = 0)
-			self.var[i][:] = np.var(X[y == i, :], axis = 0)
+			self.mu[i][:] = X[y == i, :].mean(axis = 0)
+			self.var[i][:] = X[y == i, :].var(axis = 0)
 
 		# Return the classifier
 		return self
@@ -115,14 +115,14 @@ class NaiveBayesClassifier(BaseEstimator, ClassifierMixin):
 				temp = X[n] - self.mu[i]
 				temp = temp ** 2
 				temp = temp / self.var[i]
-				temp = np.exp(-np.sum(temp) / 2)
-				temp = temp / np.sqrt(np.prod(self.var[i]))
+				temp = np.exp(- temp.sum() / 2)
+				temp = temp / np.sqrt(self.var[i].prod())
 				temp = self.prior[i] * temp
 				
 				p[n][i] = temp
 
 			if normalize:
-				p[n] /= np.sum(y[n])
+				p[n] /= y[n].sum()
 
 		return p
 

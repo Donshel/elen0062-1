@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 
 from data import make_data1, make_data2
-from plot import plot_boundary
+from plot import plot_boundary, plot_xy
 
 
 # 2 K-nearest neighbors
@@ -48,29 +48,38 @@ if __name__ == "__main__":
 				title = "\\texttt{n\_neighbors = " + str(neighbors[j]) + "}"
 			)
 
+
 	# 2.2 K-fold cross validation
-	print("make_data", "n_neighbors", "mean", "std")
+	neighbors = np.array(range(1, 101))
+	accr = np.empty((len(neighbors), n_fold))
 
-	neighbors = range(5, train_size, 5)
+	# Data set
+	X, y = make_data[1](n_samples, random_state = 0)
+	kf = KFold(n_splits = n_fold)
 
-	for i in range(len(make_data)):
-		# Data set
-		X, y = make_data[i](n_samples, random_state = 0)
-		kf = KFold(n_splits = n_fold)
+	for i in range(len(neighbors)):
+		for j, (train_index, test_index) in enumerate(kf.split(X)):
+			# Fold
+			X_train, y_train = X[train_index], y[train_index]
+			X_test, y_test = X[test_index], y[test_index]
 
-		for j in range(len(neighbors)):
-			accr = np.empty(n_fold)
+			# Classifier
+			knc = KNeighborsClassifier(n_neighbors = neighbors[i])
+			knc.fit(X_train, y_train)
 
-			for k, (train_index, test_index) in enumerate(kf.split(X)):
-				# Fold
-				X_train, y_train = X[train_index], y[train_index]
-				X_test, y_test = X[test_index], y[test_index]
+			# Accuracy
+			accr[i, j] = knc.score(X_test, y_test)
 
-				# Classifier
-				knc = KNeighborsClassifier(n_neighbors = neighbors[j])
-				knc.fit(X_train, y_train)
+	# Maximum
+	accr = accr.mean(axis = 1)
+	i = np.argmax(accr)
+	print("The maximum accuracy %f is reached for n_neighbors = %d." % (accr[i], neighbors[i]))
 
-				# Accuracy
-				accr[k] = knc.score(X_test, y_test)
-
-			print(i + 1, neighbors[j], "%f" % np.mean(accr),"%f" % np.std(accr))
+	# Plot
+	plot_xy(
+		"make_data2_kfold",
+		neighbors,
+		accr,
+		"\\texttt{n\_neighbors}",
+		"Accuracy"
+	)
