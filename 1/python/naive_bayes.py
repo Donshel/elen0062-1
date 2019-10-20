@@ -131,9 +131,6 @@ if __name__ == "__main__":
 	make_data = [make_data1, make_data2]
 	n_samples, train_size = 2000, 150
 
-	# 3.3 Accuracies
-	print("make_data", "accuracy")
-
 	for i in range(len(make_data)):
 		# Data set
 		X, y = make_data[i](n_samples, random_state = 0)
@@ -147,6 +144,13 @@ if __name__ == "__main__":
 		nbc = NaiveBayesClassifier()
 		nbc.fit(X_train, y_train)
 
+		print("make_data%d" % (i + 1))
+
 		# Accuracy
 		accr = nbc.score(X_test, y_test)
-		print(i + 1, "%f" % accr)
+		print("Accuracy = %f" % accr)
+
+		# Correlations
+		for i in range(2):
+			temp = np.corrcoef(X[y == i, :], rowvar = False)
+			print("Cov(X_0, X_1 | Y = %d) = %f" % (i, temp[0, 1]))
