@@ -32,16 +32,16 @@ if __name__ == "__main__":
 	f = lambda x: np.sin(x) * np.exp(-x ** 2 / 16)
 
 	# make_data
-	def make_data(n, q):
-		X = x_dom[choice(len(x_dom), (n, q + 1))]
-		y = f(X[:, 0]).reshape(n, 1) + sigma * randn(n, 1)
+	def make_data(N, q):
+		X = x_dom[choice(len(x_dom), (N, q + 1))]
+		y = f(X[:, 0]).reshape(N, 1) + sigma * randn(N, 1)
 
 		return X, y
 
 	# 3(d) Estimations
 
-	def bias_variance(X, y, model, p=10):
-		n = X.shape[0]
+	def bias_variance(X, y, model, p=20):
+		N = X.shape[0]
 		dom, inv = np.unique(X, return_inverse=True, axis=0)
 
 		E_y, V_y = np.empty(dom.shape[0]), np.empty(dom.shape[0])
@@ -59,12 +59,12 @@ if __name__ == "__main__":
 		y_hat = np.empty((len(dom), p))
 
 		# 3
-		index = np.arange(n // p)
+		index = np.arange(N // p)
 		for i in range(p):
 			model.fit(X[index, :], y[index])
 			y_hat[:, i] = model.predict(dom).reshape(len(dom))
 
-			index += n // p
+			index += N // p
 
 		# 4
 		E_LS = y_hat.mean(axis=1)
@@ -84,29 +84,32 @@ if __name__ == "__main__":
 
 	## Learning Set
 
-	n = 10 ** 4
+	np.random.seed(0)
+
+	N = 10 ** 4
 	q = 0
 
-	X, y = make_data(n, q)
+	X, y = make_data(N, q)
 
 	### mkdir -p products/pdf
 	dirs = "products/pdf/"
 	os.makedirs(dirs, exist_ok=True)
 
-	### f(x)
-
 	plt.figure()
-	plt.xlabel("$x$")
+	plt.xlabel("$x_r$")
 	plt.ylabel("$y$")
 	plt.grid(True)
-	plt.scatter(X[:100], y[:100], color='#ff7f0e')
-	plt.plot(x_dom, f(x_dom))
-	plt.savefig(dirs + "{}.pdf".format("data"), bbox_inches='tight')
+	plt.scatter(X[:100], y[:100], color="g", label="$LS$ subset")
+	#plt.plot(x_dom, f(x_dom), label="$f(x_r)$")
+	plt.plot(x_dom, Ridge().fit(X, y).predict(x_dom.reshape(200, 1)), label="Ridge")
+	plt.plot(x_dom, KNeighborsRegressor().fit(X, y).predict(x_dom.reshape(200, 1)), label="K-Neighbors")
+	plt.legend()
+	plt.savefig(dirs + "{}.pdf".format("predictions"), bbox_inches='tight')
 	plt.close()
 
 	## Ridge regression
 
-	dom, noise, bias2, variance, error = bias_variance(X, y, Ridge(alpha=1.0))
+	dom, noise, bias2, variance, error = bias_variance(X, y, Ridge())
 
 	plt.figure()
 	plt.xlabel("$x_r$")
@@ -121,7 +124,7 @@ if __name__ == "__main__":
 
 	## K-Neighbors regression
 
-	dom, noise, bias2, variance, error = bias_variance(X, y, KNeighborsRegressor(n_neighbors=5))
+	dom, noise, bias2, variance, error = bias_variance(X, y, KNeighborsRegressor())
 
 	plt.figure()
 	plt.xlabel("$x_r$")
@@ -145,42 +148,42 @@ if __name__ == "__main__":
 
 	## Ridge regression
 
-	### n
+	### N
 
-	n = (10 ** np.arange(2.4, 5.2, 0.2)).astype(int)
+	N = (10 ** np.arange(2, 5.2, 0.2)).astype(int)
 	q = 0
-	alpha = 0.001
+	alpha = 1.0
 
-	noise = np.empty(len(n))
+	noise = np.empty(len(N))
 	bias2 = np.empty(noise.shape)
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n[-1], q)
+	X, y = make_data(N[-1], q)
 	for i in range(noise.shape[0]):
-		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:n[i]], y[:n[i]], Ridge(alpha=alpha))
+		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:N[i]], y[:N[i]], Ridge(alpha=alpha))
 
 	plt.figure()
-	plt.xlabel("$n$")
+	plt.xlabel("$N$")
 	plt.ylabel("mean noise")
 	plt.grid(True)
-	plt.semilogx(n, noise)
+	plt.semilogx(N, noise)
 	plt.savefig(dirs + "{}.pdf".format("mean_noise_n"), bbox_inches='tight')
 	plt.close()
 
 	plt.figure()
-	plt.xlabel("$n$")
+	plt.xlabel("$N$")
 	plt.grid(True)
-	plt.loglog(n, bias2, label="mean bias$^2$")
-	plt.loglog(n, variance, label="mean variance")
-	plt.loglog(n, error, label="mean error")
+	plt.loglog(N, bias2, label="mean bias$^2$")
+	plt.loglog(N, variance, label="mean variance")
+	plt.loglog(N, error, label="mean error")
 	plt.legend()
 	plt.savefig(dirs + "{}.pdf".format("rrg_mean_n"), bbox_inches='tight')
 	plt.close()
 
 	### q
 
-	n = 10 ** 3
+	N = 10 ** 3
 	q = np.arange(0, 8)
 
 	noise = np.empty(len(q))
@@ -188,7 +191,7 @@ if __name__ == "__main__":
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n, q[-1])
+	X, y = make_data(N, q[-1])
 	for i in range(noise.shape[0]):
 		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:,:q[i] + 1], y, Ridge(alpha=alpha))
 
@@ -220,7 +223,7 @@ if __name__ == "__main__":
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n, q)
+	X, y = make_data(N, q)
 	for i in range(noise.shape[0]):
 		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X, y, Ridge(alpha=alpha[i]))
 
@@ -236,34 +239,34 @@ if __name__ == "__main__":
 
 	## K-Neighbors regression
 
-	### n
+	### N
 
-	n = (10 ** np.arange(2.4, 5.2, 0.2)).astype(int)
+	N = (10 ** np.arange(2, 5.2, 0.2)).astype(int)
 	q = 0
 	k = 5
 
-	noise = np.empty(len(n))
+	noise = np.empty(len(N))
 	bias2 = np.empty(noise.shape)
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n[-1], q)
+	X, y = make_data(N[-1], q)
 	for i in range(noise.shape[0]):
-		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:n[i]], y[:n[i]], KNeighborsRegressor(n_neighbors=k))
+		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:N[i]], y[:N[i]], KNeighborsRegressor(n_neighbors=k))
 
 	plt.figure()
-	plt.xlabel("$n$")
+	plt.xlabel("$N$")
 	plt.grid(True)
-	plt.loglog(n, bias2, label="mean bias$^2$")
-	plt.loglog(n, variance, label="mean variance")
-	plt.loglog(n, error, label="mean error")
+	plt.loglog(N, bias2, label="mean bias$^2$")
+	plt.loglog(N, variance, label="mean variance")
+	plt.loglog(N, error, label="mean error")
 	plt.legend()
 	plt.savefig(dirs + "{}.pdf".format("knr_mean_n"), bbox_inches='tight')
 	plt.close()
 
 	### q
 
-	n = 10 ** 3
+	N = 10 ** 3
 	q = np.arange(0, 8)
 
 	noise = np.empty(len(q))
@@ -271,7 +274,7 @@ if __name__ == "__main__":
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n, q[-1])
+	X, y = make_data(N, q[-1])
 	for i in range(noise.shape[0]):
 		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X[:,:q[i] + 1], y, KNeighborsRegressor(n_neighbors=k))
 
@@ -288,14 +291,14 @@ if __name__ == "__main__":
 	### k
 
 	q = 0
-	k = np.arange(1, 31)
+	k = np.arange(1, 51)
 
 	noise = np.empty(len(k))
 	bias2 = np.empty(noise.shape)
 	variance = np.empty(noise.shape)
 	error = np.empty(noise.shape)
 
-	X, y = make_data(n, q)
+	X, y = make_data(N, q)
 	for i in range(noise.shape[0]):
 		noise[i], bias2[i], variance[i], error[i] = mean_bias_variance(X, y, KNeighborsRegressor(n_neighbors=k[i]))
 
