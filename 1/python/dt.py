@@ -33,7 +33,7 @@ if __name__ == "__main__":
 			dtc.fit(X[0:n], y[0:n])
 
 			st = "make_data" + str(i + 1) + "_depth" + str(d)
-			#plot_boundary(st, dtc, X[0:n], y[0:n])
+			plot_boundary(st, dtc, X[0:n], y[0:n])
 
 	# 1.2 Accuracies
 	print("make_data", "max_depth", "mean", "std")

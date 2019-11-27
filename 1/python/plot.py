@@ -5,6 +5,7 @@ Project 1 - Classification algorithms
 """
 # -*- coding: utf-8 -*-
 
+import os
 import numpy as np
 import matplotlib as mpl
 from matplotlib import rc
@@ -85,6 +86,9 @@ def plot_boundary(fname, fitted_estimator, X, y, mesh_step_size=0.1, title=""):
         plt.xlim(xx.min(), xx.max())
         plt.ylim(yy.min(), yy.max())
 
-        plt.savefig("{}.pdf".format(fname))
+        if not os.path.exists("products/pdf"):
+        	os.makedirs("products/pdf")
+
+        plt.savefig("products/pdf/{}.pdf".format(fname), bbox_inches='tight')
     finally:
         plt.close()

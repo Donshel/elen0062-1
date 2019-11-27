@@ -34,7 +34,7 @@ if __name__ == "__main__":
 			knc.fit(X[0:n], y[0:n])
 
 			st = "make_data" + str(i + 1) + "_neighbors" + str(k)
-			#plot_boundary(st, knc, X[0:n], y[0:n])
+			plot_boundary(st, knc, X[0:n], y[0:n])
 
 	# 2.2 K-fold cross validation
 	print("make_data", "n_neighbors", "mean", "std")
