@@ -9,6 +9,7 @@ Project 1 - Classification algorithms
 import numpy as np
 
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
 
 from data import make_data1, make_data2
 from plot import plot_boundary
@@ -19,39 +20,54 @@ from plot import plot_boundary
 if __name__ == "__main__":
 	# Parameters
 	make_data = [make_data1, make_data2]
-	m, n, g = 2000, 150, 5
-	D = [1, 2, 4, 8, None]
+	n_samples, train_size, n_gen = 2000, 150, 5
+	depth = [1, 2, 4, 8, None]
 
 	# 1.1 Decision boundary
 	for i in range(len(make_data)):
-		# Generation
-		X, y = make_data[i](m, random_state = 0)
+		# Data set
+		X, y = make_data[i](n_samples, random_state = 0)
+		X_train, X_test, y_train, y_test = train_test_split(
+			X, y,
+			train_size = train_size,
+			shuffle = False
+		)
 
-		# Classifiers
-		for d in D:
-			dtc = DecisionTreeClassifier(max_depth = d)
-			dtc.fit(X[0:n], y[0:n])
+		for j in range(len(depth)):
+			# Classifier
+			dtc = DecisionTreeClassifier(max_depth = depth[j])
+			dtc.fit(X_train, y_train)
 
-			st = "make_data" + str(i + 1) + "_depth" + str(d)
-			plot_boundary(st, dtc, X[0:n], y[0:n])
+			# Plot
+			plot_boundary(
+				"make_data" + str(i + 1) + "_depth" + str(depth[j]),
+				dtc,
+				X_test[0:train_size],
+				y_test[0:train_size],
+				title = "\\texttt{max\_depth = " + str(depth[j]) + "}"
+			)
 
 	# 1.2 Accuracies
 	print("make_data", "max_depth", "mean", "std")
 
 	for i in range(len(make_data)):
-		# Generations
-		X, y = [None] * g, [None] * g
-		for j in range(g):
-			X[j], y[j] = make_data[i](m, random_state = j)
+		for j in range(len(depth)):
+			accr = np.empty(n_gen)
 
-		# Classifiers
-		for d in D:
-			A = np.zeros(g)
+			for k in range(n_gen):
+				# Data set
+				X, y = make_data[i](n_samples, random_state = k)
+				X_train, X_test, y_train, y_test = train_test_split(
+					X, y,
+					train_size = train_size,
+					shuffle = False
+				)
 
-			for j in range(g):
-				dtc = DecisionTreeClassifier(max_depth = d)
-				dtc.fit(X[j][0:n], y[j][0:n])
+				# Classifier
+				dtc = DecisionTreeClassifier(max_depth = depth[j])
+				dtc.fit(X_train, y_train)
 
-				A[j] = dtc.score(X[j][n:m], y[j][n:m])
+				# Accuracy
+				accr[k] = dtc.score(X_test, y_test)
 
-			print(str(i + 1), str(d), "%f" % np.mean(A), "%f" % np.std(A))
+			print(i + 1, depth[j], "%f" % np.mean(accr), "%f" % np.std(accr))

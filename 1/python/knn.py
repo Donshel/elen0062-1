@@ -9,6 +9,7 @@ Project 1 - Classification algorithms
 import numpy as np
 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 
 from data import make_data1, make_data2
@@ -20,38 +21,56 @@ from plot import plot_boundary
 if __name__ == "__main__":
 	# Parameters
 	make_data = [make_data1, make_data2]
-	m, n, f = 2000, 150, 10
-	K = [1, 5, 10, 75, 100, 150]
+	n_samples, train_size, n_fold = 2000, 150, 10
+	neighbors = [1, 5, 10, 75, 100, 150]
 
 	# 2.1 Decision boundary
 	for i in range(len(make_data)):
-		# Generation
-		X, y = make_data[i](m, random_state = 0)
+		# Data set
+		X, y = make_data[i](n_samples, random_state = 0)
+		X_train, X_test, y_train, y_test = train_test_split(
+			X, y,
+			train_size = train_size,
+			shuffle = False
+		)
 
-		# Classifiers
-		for k in K:
-			knc = KNeighborsClassifier(n_neighbors = k)
-			knc.fit(X[0:n], y[0:n])
+		for j in range(len(neighbors)):
+			# Classifier
+			knc = KNeighborsClassifier(n_neighbors = neighbors[j])
+			knc.fit(X_train, y_train)
 
-			st = "make_data" + str(i + 1) + "_neighbors" + str(k)
-			plot_boundary(st, knc, X[0:n], y[0:n])
+			# Plot
+			plot_boundary(
+				"make_data" + str(i + 1) + "_neighbors" + str(neighbors[j]),
+				knc,
+				X_test[0:train_size],
+				y_test[0:train_size],
+				title = "\\texttt{n\_neighbors = " + str(neighbors[j]) + "}"
+			)
 
 	# 2.2 K-fold cross validation
 	print("make_data", "n_neighbors", "mean", "std")
 
+	neighbors = range(5, train_size, 5)
+
 	for i in range(len(make_data)):
-		# Generation
-		X, y = make_data[i](m, random_state = 0)
-		kf = KFold(n_splits = f)
+		# Data set
+		X, y = make_data[i](n_samples, random_state = 0)
+		kf = KFold(n_splits = n_fold)
 
-		# Classifiers
-		for k in range(5, K[-1], 5):
-			A = np.zeros(f)
+		for j in range(len(neighbors)):
+			accr = np.empty(n_fold)
 
-			for j, (train, test) in enumerate(kf.split(X)):
-				knc = KNeighborsClassifier(n_neighbors = k)
-				knc.fit(X[train], y[train])
+			for k, (train_index, test_index) in enumerate(kf.split(X)):
+				# Fold
+				X_train, y_train = X[train_index], y[train_index]
+				X_test, y_test = X[test_index], y[test_index]
 
-				A[j] = knc.score(X[test], y[test])
+				# Classifier
+				knc = KNeighborsClassifier(n_neighbors = neighbors[j])
+				knc.fit(X_train, y_train)
 
-			print(str(i + 1), str(k), "%f" % np.mean(A), "%f" % np.std(A))
+				# Accuracy
+				accr[k] = knc.score(X_test, y_test)
+
+			print(i + 1, neighbors[j], "%f" % np.mean(accr),"%f" % np.std(accr))
