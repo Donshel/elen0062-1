@@ -1,0 +1,77 @@
+\documentclass[a4paper, 12pt]{article}
+
+\def\languages{french, english}
+
+%%%%%%%%%%%%%%%%%%% Libraries
+
+\input{include/libraries/bibliography.tex}
+\input{include/libraries/default.tex}
+\input{include/libraries/figures.tex}
+\input{include/libraries/informatics.tex}
+\input{include/libraries/mathematics.tex}
+\input{include/libraries/theorems.tex}
+\input{include/libraries/units.tex}
+
+%%%%%%%%%%%%%%%%%%% Titlepage
+
+\def\logopath{resources/pdf/logo-uliege.pdf}
+\def\toptitle{University of Liège}
+\title{Activity prediction for chemical compounds}
+\def\subtitle{Introduction to machine learning}
+%\def\authorhead{Author}
+\author{
+    Maxime \textsc{Meurisse} (20161278)\\
+    François \textsc{Rozet} (20161024)\\
+    Valentin \textsc{Vermeylen} (20162864)\\
+}
+%\def\rightauthorhead{}
+%\def\rightauthor{}
+\def\context{MSc in Computer Science and Engineering}
+\date{Academic year 2019-2020}
+
+%%%%%%%%%%%%%%%%%%% Options
+
+\fancyhead[R]{}
+\geometry{paper=a4paper,margin=2.5cm}
+\addbibresource{references.bib}
+
+%%%%%%%%%%%%%%%%%%% Additional packages
+
+\usepackage{wrapfig}
+\usepackage{colortbl}
+
+%%%%%%%%%%%%%%%%%%% Document
+
+\begin{document}
+    % ----- Title page ----- %
+	\input{include/titlepages/default.tex}
+	
+	% ----- Introduction ----- %
+	\input{sections/1_introduction.tex}
+	
+	% ----- Data pre-processing ----- %
+	\input{sections/2_data_preprocessing.tex}
+	
+	% ----- Estimation of the AUC ----- %
+	\input{sections/3_auc_estimation.tex}
+	
+	% ----- Models ----- %
+	\input{sections/4_models.tex}
+	
+	% ----- Fingerprints ----- %
+	\input{sections/5_fingerprints.tex}
+	
+	% ----- Performance summary ----- %
+	\input{sections/6_performance_summary.tex}
+	
+	% ----- Conclusion ----- %
+	\input{sections/7_conclusion.tex}
+	
+	% ----- Appendix ----- %
+	\input{sections/appendix.tex}
+	
+	% ----- References ----- %
+    \newpage
+    \nocite{*}
+    \printbibliography
+\end{document}

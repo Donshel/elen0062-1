@@ -1,0 +1,12 @@
+\newpage
+\appendix
+\section{Code organization}
+Our code consists of 6 files :
+\begin{itemize}
+    \item \texttt{chart.py} : this file contains customised plots functions in order to best present our results.
+    \item \texttt{fingerprints.py} : this file contains several functions allowing us to test different fingerprints.
+    \item \texttt{kernels.py} : this file contains several personal kernel implementations.
+    \item \texttt{main.py} : this file is the main file of our code. It retrieves the data from the training set, instantiates and trains the models, evaluates their performance and creates the submission file.
+    \item \texttt{models.py} : this file contains the implementation of all our models. Each model is represented by a class.
+    \item \texttt{utils.py} : this file contains the various functions of our code. These functions, allowing to read CSV files, convert SMILES representations into fingerprints and create the submission file, have been taken from the toy submission proposed on the Kaggle platform.
+\end{itemize}

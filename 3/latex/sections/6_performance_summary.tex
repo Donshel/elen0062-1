@@ -1,0 +1,57 @@
+\section{Performance summary} \label{sec:performance}
+
+The table \ref{tab:performance.summary} shows the performance of different models tested. Each model was evaluated according to several scores :
+\begin{itemize}
+    \item $AUC_{pred}$, the score that we personally calculated;
+    \item $AUC_{publ}$, the public score obtained on the Kaggle platform;
+    \item $AUC_{priv}$, the private score obtained on the Kaggle platform;
+    \item $VS$, the validation score, calculated as follow :
+    $$
+    VS = AUC_{priv} - \left | AUC_{pred} - AUC_{priv} \right |
+    $$
+\end{itemize}
+
+\begin{table}[H]
+    \centering
+    \resizebox{0.8\textwidth}{!}{%
+    \begin{tabular}{|p{4cm}|p{5cm}|c|c|c|c|}
+    	\hline
+    	\multirow{2}{*}{Fingerprint}                                               & \multirow{2}{*}{Model}                                                                     &         \multicolumn{3}{c|}{$AUC$}         & \multirow{2}{*}{$VS$} \\ \cline{3-5}
+    	                                                                           &                                                                                            &    $pred$    &    $publ$    &    $priv$    &                       \\ \hline\hline
+    	\multirow{4}{4cm}{\texttt{Morgan(radius=2, nBits=128, useFeatures=False)}} & \texttt{KNN(n\_neighbors=20)}                                                              & \num{0.7417} & \num{0.7062} & \num{0.7494} &     \num{0.7417}      \\ \cline{2-6}
+    	                                                                           & \texttt{MLP(layers\_sizes=(100,))}                                                         & \num{0.7449} & \num{0.7217} & \num{0.7512} &     \num{0.7449}      \\ \cline{2-6}
+    	                                                                           & \texttt{SVM(kernel='rbf', gamma='auto', C=1)}                                              & \num{0.7334} & \num{0.7027} & \num{0.7418} &     \num{0.7334}      \\ \cline{2-6}
+    	                                                                           & \texttt{RFC(n\_estimators=500)}                                                            & \num{0.7510} & \num{0.7415} & \num{0.7827} &     \num{0.7510}      \\ \hline\hline
+    	\multirow{4}{4cm}{\texttt{Morgan(radius=2, nBits=128, useFeatures=True)}}  & \texttt{KNN(n\_neighbors=20)}                                                              & \num{0.7477} & \num{0.7469} & \num{0.7547} &     \num{0.7477}      \\ \cline{2-6}
+    	                                                                           & \texttt{MLP(layers\_sizes=(100,))}                                                         & \num{0.7531} & \num{0.7342} & \num{0.7289} &     \num{0.7047}      \\ \cline{2-6}
+    	                                                                           & \texttt{SVM(kernel='rbf', gamma='auto', C=1)}                                              & \num{0.7209} & \num{0.7536} & \num{0.7250} &     \num{0.7209}      \\ \cline{2-6}
+    	                                                                           & \texttt{RFC(n\_estimators=500)}                                                            & \num{0.7793} & \num{0.7745} & \num{0.7758} &     \num{0.7723}      \\ \cline{2-6}
+    	                                                                           & \texttt{RFC(n\_estimators=500, class\_weight='balanced')}                                  & \num{0.7874} & \num{0.7798} & \num{0.7776} &     \num{0.7678}      \\ \cline{2-6}
+    	                                                                           & \texttt{ConsensusClassifier(\footnotemark[1])}                                             & \num{0.7813} & \num{0.8007} & \num{0.7784} &     \num{0.7755}      \\ \cline{2-6}
+    	\rowcolor{blue!25}                                                         & \texttt{ConsensusClassifier(\footnotemark[2])}                                             & \num{0.7829} & \num{0.8034} & \num{0.7754} &     \num{0.7679}      \\ \cline{2-6}
+    	                                                                           & \texttt{VotingClassifier(\footnotemark[1])}                                                & \num{0.7823} & \num{0.7953} & \num{0.7769} &     \num{0.7715}      \\ \cline{2-6}
+    	                                                                           & \texttt{StackingClassifier(\footnotemark[1], meta\_classifier= MLP(layers\_sizes=(100,)))} & \num{0.7886} & \num{0.7825} & \num{0.7771} &     \num{0.7656}      \\ \cline{2-6}
+    	\rowcolor{blue!25}                                                         & \texttt{RFC(n\_estimators=100)}\footnotemark[3]                                            & \num{0.7860} & \num{0.7936} & \num{0.7918} &     \num{0.7860}      \\ \hline\hline
+    	\multirow{3}{4cm}{\texttt{MACCS()}}                                        & \texttt{KNN(n\_neighbors=20)}                                                              & \num{0.7468} & \num{0.7372} & \num{0.7739} &     \num{0.7468}      \\ \cline{2-6}
+    	                                                                           & \texttt{MLP(layers\_sizes=(100,))}                                                         & \num{0.7384} & \num{0.7479} & \num{0.7603} &     \num{0.7384}      \\ \cline{2-6}
+    	                                                                           & \texttt{RFC(n\_estimators=500)}                                                            & \num{0.7918} & \num{0.7154} & \num{0.7903} &     \num{0.7888}      \\ \hline\hline
+    	\texttt{Morgan(radius=2, nBits=512, useFeatures=True)}                     & \texttt{ConsensusClassifier(\footnotemark[2])}                                             & \num{0.7690} & \num{0.7678} & \num{0.7950} &     \num{0.7690}      \\ \hline
+    	\texttt{Avalon(nBits=512)}                                                 & \texttt{ConsensusClassifier(\footnotemark[2])}                                             & \num{0.7875} & \num{0.7564} & \num{0.8116} &     \num{0.7875}      \\ \hline
+    	\texttt{Avalon(nBits=128)}                                                 & \texttt{ConsensusClassifier(\footnotemark[2])}                                             & \num{0.7598} & \num{0.7281} & \num{0.7905} &     \num{0.7598}      \\ \hline
+    \end{tabular}}
+    \caption{Performance summary of the different models (not exhaustive)}
+    \label{tab:performance.summary}
+\end{table}
+
+\footnotetext[1]{\texttt{[KNN(n\_neighbors=20), MLP(layers\_sizes=(100,)), SVM(kernel='rbf', gamma='auto', C=1), RFC(n\_estimators=500)]}}
+\footnotetext[2]{\texttt{[KNN(n\_neighbors=17), MLP(layers\_sizes=(100,)), SVM(kernel='rbf', gamma='auto', C=1), RFC(n\_estimators=500)]}}
+\footnotetext[3]{That model hasn't been trained with the whole learning set. Indeed, since the learning set was large (enough) but very unbalanced class-wise, we tried to counterbalance it by removing part ($\frac{6}{7}$) of the inactive components.}
+
+\subsection{Final models selected}
+
+The two models we selected as our \og{}final\fg{} models are the one in blue in the Table \ref{tab:performance.summary}.
+
+\begin{enumerate}
+    \item The first one is a \texttt{ConsensusClassifier}, the ensemble classifier we handcrafted. It is has been used with four classifiers : \texttt{KNN(n\_neighbors=17)}, \texttt{MLP(layers\_sizes=(100,))}, \texttt{SVM(kernel='rbf', gamma='auto', C=1)} and \texttt{RFC(n\_estimators=500)}. We chose this classifier for two reasons : 1. it was our best public submission and one of the best in our predictions; 2. because we built it ourselves, we were thrilled to see it perform better than other pre-implemented ensemble classifiers. Unfortunately, by comparing the predicted AUC (and the public score) with the private score, we deduce that this model was probably slightly overfitting the public data.
+    \item The second one is a Random Forest Classifier with 100 estimators. However, as explained before\footnotemark[3], this model hasn't been trained with the whole learning. As a result, this model is less likely to overfit and the computation (fitting) time decreased dramatically. Yet, it was one of our best submission both for the AUC prediction and the public score. We therefore preferred it over slightly better models since it was one of the simplest, certainly the quickest to train and, as the main reason, because it probably overfitted less the public dataset than other models. Indeed, we can see on the final results that it was probably correct as the two scores (public and private) do not differ much.
+\end{enumerate}

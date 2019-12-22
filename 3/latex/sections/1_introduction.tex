@@ -1,0 +1,10 @@
+\section{Introduction}
+The project is organized as a competition between different teams on the Kaggle platform. As mentioned on this website, it consists of using (supervised) learning techniques to design a model able to predict the activity of a chemical compound (described by its molecular structure). The main goal is about {\it determining the ability for a chemical compound to inhibit HIV replication}. \cite{kaggle-iml2019}
+
+Since the prediction associated with each molecule is a boolean (the molecules inhibit HIV replication or not), we tried classification methods. We used the methods seen during the course, but also other methods found in scientific papers or websites. We also took inspiration in this \href{https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html}{scikit-learn flowchart} to guide our tests.
+
+The main classifiers we focus about were the \emph{K-Neighbors Classifier}, \emph{Multilayer Perceptron}, \emph{Random Forest Classifier}, \emph{Support Vector Machine} and combinations of those using \emph{Ensemble} and handcrafted methods.
+
+First of all, we tested each method individually without changing any parameters to get an idea of their performance (cf. section \ref{sec:AUC}). Then we tried to optimize the parameters of each one by iteratively applying them on the learning set and estimating their accuracy. Since the results weren't satisfying enough both with for local estimation and for the kaggle platform, we had the idea of combining them which lead better results.
+
+Apart from the actual classifier algorithm, we also tried several fingerprint representations of the SMILES molecules. For example, we tried the following : \emph{Morgan}, \emph{RDKFingerprint} (Daylight-like), \emph{Avalon}, \emph{MACCS} fingerprints and a few others. Each of them have parameters that we tried to tweak for the better. However, we only realized that there were different fingerprints near the end of our journey which did not left us with a lot of time to experiment with them.

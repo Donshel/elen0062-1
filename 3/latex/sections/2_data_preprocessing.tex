@@ -1,0 +1,4 @@
+\section{Data pre-processing}
+In order to train our models, we received a training set consisting of \num{15939} chemical compounds with their corresponding activity. Each chemical compound is described under the SMILES format (a line notation for the chemical structure of molecules). However, this format is difficult to use as it is by our models\footnote{Afterwards, we think that we could have tried text analysis algorithms.}. We therefore transformed the SMILES into binary fingerprints (cf. section \ref{sec:fingerprint}), i.e. vector of zeros and ones describing features.
+
+Most of the time these fingerprints are sparse, therefore it is possible that one of the feature is the \emph{same} for all molecules. Therefore we applied a variance threshold \cite{scikit-variance-threshold} to remove all features whose variances are null.

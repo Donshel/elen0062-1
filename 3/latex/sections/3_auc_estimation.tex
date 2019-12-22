@@ -1,0 +1,8 @@
+\section{Estimation of the AUC}\label{sec:AUC}
+To evaluated the accuracy of our models we used the ROC AUC metric (area under the ROC curve) available in the scikit-learn library \cite{scikit-roc-auc-score} combined with a random permutation cross-validator \cite{scikit-shufflesplit}.
+
+The latter works as follow : a random permutation of the learning set is computed. The model is trained on a $1 - x$ portion of the permutation and used to predict the class of the remaining $x$ portion. Then the AUC score is computed using the prediction probabilities and the actual classes. This is repeated $n$ times. Finally, the $n$ gathered scores are averaged.
+
+In contrast to the classic \emph{KFold} cross-validator, this one dissociates the number of splits ($n$) and the test size ($x$). In our case we chose $x = 0.25$ and $n = 5$.
+
+The comparison between the estimated AUC and the actual (private) AUC will be conducted in section \ref{sec:performance}.

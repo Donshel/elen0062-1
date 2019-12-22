@@ -1,0 +1,8 @@
+\section{Conclusion}
+This project allowed us to review and apply many of the concepts seen in class, mainly the use of supervised learning techniques and the evaluation of their performance.
+
+We also had the opportunity to investigate models that were not seen in class, as well as to get information in scientific research papers.
+
+Although our selected models performed quite well on the public leaderboard (with AUC of $0.79360$ and $0.80340$), we found out that they underperformed on the private one, while some models that we rejected due to their low scores on the public leaderboard showed very good performance on the private one. The fact that our \textit{ConsensusClassifier} underperformed probably comes from the fact that it overfits the data used to estimate the public score. Indeed, some of the models we rejected show a score of more than $0.8$, which is better than both models we chose to be evaluated, but a public score of $0.75-0.76$.
+
+Were we to select a new model to evaluate, we would also make sure that the number of bits used for fingerprinting is higher than what we used in our submitted models (128 bits), as the higher that number, the more complex the feature that can be detected, and we would also base our selection of algorithms on our predicted AUC without paying much attention to the public score, as our prediction was usually more reliable in that regards (as we realized \textit{a posteriori}). Indeed, some models discarded early due to their low public score had a high predicted score of more than $0.79$ and provided more than $0.80$ on the private leaderboard (simple Random Forest Classifiers with 500 or 1000 trees for example), although they showed a public score of $0.75-0.76$.
