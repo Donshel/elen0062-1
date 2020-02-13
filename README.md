@@ -11,3 +11,7 @@ These projects have been developed using [Python](https://www.python.org/).
 * **Maxime Meurisse** - [meurissemax](https://github.com/meurissemax)
 * **François Rozet** - [Donshel](https://github.com/Donshel)
 * **Valentin Vermeylen** - [ValentinVermeylen](https://github.com/ValentinVermeylen)
+
+## Scores
+
+* Project 3 received the score of 17/20.
