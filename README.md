@@ -10,3 +10,8 @@ These projects have been developed using [Python](https://www.python.org/).
 
 * **François Rozet** - [Donshel](https://github.com/Donshel)
 * **Adrien Schoffeniels** - [Schoff21](https://github.com/Schoff21)
+
+## Scores
+
+* Project 1 received the score of 17/20.
+* Project 2 received the score of 17/20.
