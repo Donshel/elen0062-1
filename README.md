@@ -8,7 +8,7 @@ These projects have been developed using [Python](https://www.python.org/).
 
 ## Authors
 
-* **François Rozet** - [Donshel](https://github.com/Donshel)
+* **François Rozet** - [francois-rozet](https://github.com/francois-rozet)
 * **Adrien Schoffeniels** - [Schoff21](https://github.com/Schoff21)
 
 ## Scores
